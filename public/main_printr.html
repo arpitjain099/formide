@@ -10,9 +10,67 @@
   <script src="bootstrap.min.js"></script>
 
   <script type="text/javascript">
+  function refreshpage(){
+    window.location.reload();
+
+  }
+
+  
+function editentry(asa){
+  console.log(asa);
+ // console.log(asa['_id']);
+
+$('#myModal').modal('hide');
+  $("#editentrymodal").modal();
+
+document.getElementById("editentry_id").value=asa['_id'];
+document.getElementById("editentry_id").disabled = true;
+
+document.getElementById("editentry_name").value=asa['name'];
+document.getElementById("editentry_tags").value=asa['tags'];
+document.getElementById("editentry_images").value=asa['images'];
+document.getElementById("editentry_username").value=asa['username'];
+document.getElementById("editentry_userphoto").value=asa['userimage'];
+document.getElementById("editentry_publishdate").value=asa['publishdate'];
+document.getElementById("editentry_status").value=asa['status'];
+
+//addnew_name: document.getElementById('addnew_name').value, addnew_tags: t_tags,addnew_images: t_img,addnew_username: document.getElementById('addnew_username').value,addnew_userphoto: document.getElementById('addnew_userphoto').value,addnew_publishdate: document.getElementById('addnew_publishdate').value,addnew_status: document.getElementById('addnew_status').value
+
+/*$.post( "http://localhost:8081/editentry", { ID: asa['_id']
+    , value_: 'inactive' }, function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+                   // if(data=="update done successfully")
+      document.getElementById("changestatusbutton").innerHTML="<center>Deactivation successful. Please refresh page to see updated values.</center>";
+                  });*/
+
+}
+
+function editentrypostitem(){
+//console.log(document.getElementById('editentry_id').value);
+var t_tags=document.getElementById("editentry_tags").value;
+t_tags=t_tags.split(",");
+var t_img=document.getElementById("editentry_images").value;
+t_img=t_img.split(",");
+
+$.post( "http://localhost:8081/editentry", { editentry_name: document.getElementById('editentry_name').value, editentry_tags: t_tags,editentry_images: t_img,editentry_username: document.getElementById('editentry_username').value,editentry_userphoto: document.getElementById('editentry_userphoto').value,editentry_publishdate: document.getElementById('editentry_publishdate').value,editentry_status: document.getElementById('editentry_status').value, editentry_id:document.getElementById('editentry_id').value}, function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+                 // console.log(data);
+      document.getElementById("editentrypost_button").innerHTML="<center>Edit successful. Please refresh page to see updated values. <a onclick='refreshpage()'> Refresh page </a> </center>";
+                  });
+
+}
+
+
+
+
+
 function changestatus(asa){
 if(asa['status']=='active'){
-  console.log(asa['_id']);
+ // console.log(asa['_id']);
 
 
 $.post( "http://localhost:8081/toggle", { ID: asa['_id']
@@ -21,11 +79,11 @@ $.post( "http://localhost:8081/toggle", { ID: asa['_id']
                 })
                   .done(function(data) {
                    // if(data=="update done successfully")
-      document.getElementById("changestatusbutton").innerHTML="<center>Deactivation successful. Please refresh page to see updated values.</center>";
+      document.getElementById("changestatusbutton").innerHTML="<center>Deactivation successful. Please refresh page to see updated values. <a onclick='refreshpage()'> Refresh page </a></center>";
                   });
 }
 else {
-console.log(asa['_id']);
+//console.log(asa['_id']);
 
 
 $.post( "http://localhost:8081/toggle", { ID: asa['_id']
@@ -33,14 +91,13 @@ $.post( "http://localhost:8081/toggle", { ID: asa['_id']
                  // alert( "success" );
                 })
                   .done(function(data) {
-      document.getElementById("changestatusbutton").innerHTML="<center>Activation successful. Please refresh page to see updated values.</center>";
+      document.getElementById("changestatusbutton").innerHTML="<center>Activation successful. Please refresh page to see updated values. <a onclick='refreshpage()'> Refresh page </a></center>";
                   });
 }
 }
 
-  console.log(window.localStorage.getItem("usertype"));
 function passforalertbox(stsda){
-  console.log(stsda);
+ // console.log(stsda);
   if(localStorage.getItem("usertype")=="admin")
     {
       document.getElementById("changestatusbutton").style.display="block";
@@ -49,15 +106,11 @@ function passforalertbox(stsda){
    else 
      document.getElementById("changestatusbutton").innerHTML="<button onclick='changestatus(".concat(JSON.stringify(stsda)).concat(")' type='button' class='btn btn-primary btn-block'>Activate</button>");
  }
-  console.log(stsda);
-
-
-
-
+ // console.log(stsda);
   var ordertotal_content="";
   if(localStorage.getItem("usertype")=="admin")
     { ordertotal_content=ordertotal_content.concat("<div class='row'>");
-      ordertotal_content=ordertotal_content+"<button align='left' class='col-md-1 btn btn-primary'><center>&nbsp&nbspEdit</center></button>";
+      ordertotal_content=ordertotal_content+"<button onclick='editentry("+JSON.stringify(stsda)+")'align='left' class='col-md-1 btn btn-primary'><center>&nbsp&nbspEdit</center></button>";
     ordertotal_content=ordertotal_content+"<div class='col-md-10' align='center'>Name: ".concat(stsda.name).concat("</div>");
   }
     else{
@@ -83,7 +136,7 @@ function passforalertbox(stsda){
   ls=ls.concat("<div class='row'><div class='col-md-3'>Published by: </div><img align='left' class='col-md-2' src='").concat(stsda['userimage']).concat("'><div class='col-md-7'>").concat(stsda['username']).concat("</div></div>");
 
   ls=ls.concat("Images: ").concat(stsda['images'].length).concat(" images found<br>");
-  console.log(stsda['images']);
+ // console.log(stsda['images']);
   for(var i=0;i<stsda['images'].length;i++)
     {
       if(i%4==0)
@@ -94,11 +147,29 @@ function passforalertbox(stsda){
       ls=ls.concat("</div>");
     }
   ls=ls.concat('</div>')
-  console.log(ls);
+ // console.log(ls);
 document.getElementById("bodycontentmodal").innerHTML=ls;
    $("#myModal").modal();
-  console.log(stsda);
-  
+ // console.log(stsda);
+  }
+
+function addnewitem(){
+ // console.log(document.getElementById('addnew_status').value );
+  var t_img=document.getElementById('addnew_images').value;
+  t_img = t_img.split(',');
+  var t_tags=document.getElementById('addnew_tags').value;
+  t_tags=t_tags.split(',')
+ // console.log(t_tags);
+  //console.log(t_img);
+   $.post( "http://localhost:8081/addnew", { addnew_name: document.getElementById('addnew_name').value, addnew_tags: t_tags,addnew_images: t_img,addnew_username: document.getElementById('addnew_username').value,addnew_userphoto: document.getElementById('addnew_userphoto').value,addnew_publishdate: document.getElementById('addnew_publishdate').value,addnew_status: document.getElementById('addnew_status').value }, function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+                    if(data=="insert successfull")
+                      document.getElementById("addnewitem_button").innerHTML="<center>Insert successfull. Please refresh page to see updated values. <a onclick='refreshpage()'> Refresh page </a></center>";
+                  });
+}
+
 
   /*for(i=0;i<stsda.order.length;i++)
   {
@@ -108,30 +179,30 @@ document.getElementById("bodycontentmodal").innerHTML=ls;
   //prompt('<table style="width:100%"> <tr> <td>Jill</td> <td>Smith</td> <td>50</td> </tr> <tr> <td>Eve</td> <td>Jackson</td> <td>94</td> </tr> <tr> <td>John</td> <td>Doe</td> <td>80</td> </tr> </table>',"new");
   //var person = prompt(ls, "Pin");
     
-}
+
 
    
 
 
 
    $(document).ready(function() { 
-            $.post( "http://localhost:8081/api", function() {
+            $.post( "http://localhost:8081/api", {usertype:window.localStorage.getItem("usertype")}, function() {
                  // alert( "success" );
                 })
                   .done(function(data) {
 
                     examplejson=data;
-                   console.log(examplejson.length);
+                   //console.log(examplejson.length);
                       for(var i=0;i<examplejson.length;i++){
 
         sts="";
-        console.log((examplejson[i]));
+        //console.log((examplejson[i]));
         sts=sts.concat('<div  onclick=\'passforalertbox(');
           sts=sts.concat(JSON.stringify(examplejson[i]));
           
           //console.log(typeof(JSON.stringify(examplejson[i].name)));
           sts=sts.concat(')\') > <div >');
-          console.log(sts);
+         // console.log(sts);
         sts=sts.concat('</div>  <div >');
         //sts=sts.concat('<div class="panel-body">');
         sts=sts.concat('<b>Name</b>: '.concat(examplejson[i].name).concat('<br>'));
@@ -226,17 +297,78 @@ Welcome Page
     </div>
   </div>
 
-  <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal fade" id="addnew" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add new</h4>
+          <h4 class="modal-title"><center>Add new</center></h4>
         </div>
-        <div class="modal-body"><div id="bodycontentmodal"></div>
-        <div id="changestatusbutton" style="display:none"></div>
+        <div class="modal-body">
+            <input type="text" placeholder="Name" id="addnew_name" size="35"></input><br>
+            <input type="text" placeholder="Tags (comma separated)" id="addnew_tags" size="35"></input><br>
+
+            <input type="text" placeholder="Images (comma separated)" id="addnew_images" size="35"></input><br>
+
+            <input type="text" placeholder="Username" id="addnew_username" size="35"></input><br>
+
+            <input type="text" placeholder="User image" id="addnew_userphoto" size="35"></input><br>
+
+            <input type="text" placeholder="Publish Date (DD-MM-YYYY)" size="35" id="addnew_publishdate"></input><br>
+
+            Status
+            <select id="addnew_status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+              
+          </select>
+        </div>
+          <div id="addnewitem_button"><button onclick='addnewitem()' type='button' class='btn btn-primary btn-block'>Add</button></div>
+
+        </div>
+
+        
+    
+        </div>
+
+</div>
+
+
+
+  <div class="modal fade" id="editentrymodal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><center>Edit</center></h4>
+        </div>
+        <div class="modal-body">
+
+            _id: <input type="text"  id="editentry_id" size="35"></input><br>
+            Name: <input type="text"  id="editentry_name" size="35"></input><br>
+            Tags: <input type="text"  id="editentry_tags" size="35"></input><br>
+
+            Image(s): <input type="text" id="editentry_images" size="35"></input><br>
+
+            Username: <input type="text"  id="editentry_username" size="35"></input><br>
+
+            User image: <input type="text"  id="editentry_userphoto" size="35"></input><br>
+
+            Publish date: <input type="text" size="35" id="editentry_publishdate"></input><br>
+
+            Status
+            <select id="editentry_status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+              
+          </select>
+        </div>
+<div id="editentrypost_button"><button onclick='editentrypostitem()' type='button' class='btn btn-primary btn-block'>Edit</button></div>
+        </div>
 
         
     
@@ -245,8 +377,7 @@ Welcome Page
         
       </div>
       
-    </div>
-  </div>
+    
 
 
 <script type="text/javascript">
