@@ -1,0 +1,24 @@
+<script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
+<button onclick="cr()">Button</button>
+<script>
+
+function cr(){
+	alert("hsa");
+	var jqxhr = $.post( "http://localhost:8081/api", function() {
+  alert( "success" );
+})
+  .done(function(data) {
+    alert( data );
+  })
+  .fail(function() {
+    alert( "error" );
+  })
+  .always(function() {
+    alert( "finished" );
+});
+
+}
+ 
+// Perform other work here ...
+ 
+</script>

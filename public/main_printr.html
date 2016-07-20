@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <script src="jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+function changestatus(asa){
+if(asa['status']=='active'){
+  console.log(asa['_id']);
+
+
+$.post( "http://localhost:8081/toggle", { ID: asa['_id']
+    , value_: 'inactive' }, function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+                   // if(data=="update done successfully")
+      document.getElementById("changestatusbutton").innerHTML="<center>Deactivation successful. Please refresh page to see updated values.</center>";
+                  });
+}
+else {
+console.log(asa['_id']);
+
+
+$.post( "http://localhost:8081/toggle", { ID: asa['_id']
+    , value_: 'active' }, function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+      document.getElementById("changestatusbutton").innerHTML="<center>Activation successful. Please refresh page to see updated values.</center>";
+                  });
+}
+}
+
+  console.log(window.localStorage.getItem("usertype"));
+function passforalertbox(stsda){
+  console.log(stsda);
+  if(localStorage.getItem("usertype")=="admin")
+    {
+      document.getElementById("changestatusbutton").style.display="block";
+    if(stsda.status=="active")
+     document.getElementById("changestatusbutton").innerHTML="<button onclick='changestatus(".concat(JSON.stringify(stsda)).concat(")' type='button' class='btn btn-primary btn-block'>Deactivate</button>");
+   else 
+     document.getElementById("changestatusbutton").innerHTML="<button onclick='changestatus(".concat(JSON.stringify(stsda)).concat(")' type='button' class='btn btn-primary btn-block'>Activate</button>");
+ }
+  console.log(stsda);
+
+
+
+
+  var ordertotal_content="";
+  if(localStorage.getItem("usertype")=="admin")
+    { ordertotal_content=ordertotal_content.concat("<div class='row'>");
+      ordertotal_content=ordertotal_content+"<button align='left' class='col-md-1 btn btn-primary'><center>&nbsp&nbspEdit</center></button>";
+    ordertotal_content=ordertotal_content+"<div class='col-md-10' align='center'>Name: ".concat(stsda.name).concat("</div>");
+  }
+    else{
+      ordertotal_content=ordertotal_content+"<center>Name: ".concat(stsda.name).concat("</center>");
+    }
+
+  if(localStorage.getItem("usertype")=="admin")
+  ordertotal_content=ordertotal_content.concat("</div>")
+  document.getElementById("ordertotal").innerHTML=ordertotal_content;
+  ls="";
+  ls=ls.concat("Name: ").concat(stsda['name']).concat("<br>");
+  ls=ls.concat("Status: ").concat(stsda['status']).concat("<br>");
+  var temp=stsda['tags'];
+  var stda="";
+  for(var i=0;i<temp.length;i++)
+    if(i==temp.length-1)
+      stda=stda+stsda.tags[i];
+  else 
+    stda=stda+stsda.tags[i]+", ";
+  ls=ls.concat("Tags: ").concat(stda).concat("<br>");
+  ls=ls.concat("Date added: ").concat(stsda['publishdate']).concat("<br>");
+  //ls=ls.concat("Published by: ").concat(stsda['publishdate']);
+  ls=ls.concat("<div class='row'><div class='col-md-3'>Published by: </div><img align='left' class='col-md-2' src='").concat(stsda['userimage']).concat("'><div class='col-md-7'>").concat(stsda['username']).concat("</div></div>");
+
+  ls=ls.concat("Images: ").concat(stsda['images'].length).concat(" images found<br>");
+  console.log(stsda['images']);
+  for(var i=0;i<stsda['images'].length;i++)
+    {
+      if(i%4==0)
+      ls=ls.concat("<div class='row'>");
+      ls=ls.concat("<img class='col-sm-3' src='").concat(stsda['images'][i]).concat("'>");
+      if(i==0)continue;
+      else if (i%3==0)
+      ls=ls.concat("</div>");
+    }
+  ls=ls.concat('</div>')
+  console.log(ls);
+document.getElementById("bodycontentmodal").innerHTML=ls;
+   $("#myModal").modal();
+  console.log(stsda);
+  
+
+  /*for(i=0;i<stsda.order.length;i++)
+  {
+    ls=ls.concat(stsda.order[i].item).concat(" ").concat(stsda.order[i].quantity).concat(" ").concat(stsda.order[i].price).concat("\n");
+  }*/
+
+  //prompt('<table style="width:100%"> <tr> <td>Jill</td> <td>Smith</td> <td>50</td> </tr> <tr> <td>Eve</td> <td>Jackson</td> <td>94</td> </tr> <tr> <td>John</td> <td>Doe</td> <td>80</td> </tr> </table>',"new");
+  //var person = prompt(ls, "Pin");
+    
+}
+
+   
+
+
+
+   $(document).ready(function() { 
+            $.post( "http://localhost:8081/api", function() {
+                 // alert( "success" );
+                })
+                  .done(function(data) {
+
+                    examplejson=data;
+                   console.log(examplejson.length);
+                      for(var i=0;i<examplejson.length;i++){
+
+        sts="";
+        console.log((examplejson[i]));
+        sts=sts.concat('<div  onclick=\'passforalertbox(');
+          sts=sts.concat(JSON.stringify(examplejson[i]));
+          
+          //console.log(typeof(JSON.stringify(examplejson[i].name)));
+          sts=sts.concat(')\') > <div >');
+          console.log(sts);
+        sts=sts.concat('</div>  <div >');
+        //sts=sts.concat('<div class="panel-body">');
+        sts=sts.concat('<b>Name</b>: '.concat(examplejson[i].name).concat('<br>'));
+        var temp=examplejson[i].tags;
+        var emptys="";
+        for(var xaxaa=0;xaxaa<temp.length;xaxaa++)
+          if(xaxaa==temp.length-1)
+            emptys=emptys+examplejson[i].tags[xaxaa]
+            else 
+          emptys=emptys+examplejson[i].tags[xaxaa]+", ";
+        //temp=temp.replace(/'/g,"");
+        sts=sts.concat('<b>Tags</b>: '.concat(emptys).concat('<br>'));
+        
+        if(i!=examplejson.length-1)
+        sts=sts.concat('<b>Publish Date</b>: '.concat(examplejson[i].publishdate).concat("<hr><hr>"));
+      else
+        sts=sts.concat('<b>Publish Date</b>: '.concat(examplejson[i].publishdate));
+        //sts=sts.concat('</div>');
+
+        sts=sts.concat('</div> </div>');
+        
+      $(sts).fadeIn('slow').appendTo('.inputs');
+}
+                    //alert( data );
+                  })
+                  .fail(function() {
+                    //alert( "error" );
+                  })
+                  .always(function() {
+                    //alert( "finished" );
+                });
+
+         });
+
+
+
+</script>
+<title>
+Welcome Page
+</title>
+<style type="text/css">
+#form{
+     position:absolute;
+     top:30%;     left:5%;
+     right:5%;
+    
+    bottom:0%;
+}
+</style>
+</head>
+<body>
+<center>
+<div class="panel panel-default">
+  <div class="panel-heading" >
+    <div class="row">
+      <div style="text-align:left" class="col-md-6" id="header_left"></div>
+      <div class="col-md-6" style="text-align:right"  >
+        <button onclick="showgpsdata()" type="button" class="btn btn-primary" id="header"></button>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="inputs" id="orderlist"></div>
+  <br>
+  <div id="footer" class="panel-footer">Powered by Formide</div>
+
+        
+    
+
+</div>
+  
+</center>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="ordertotal"></h4>
+        </div>
+        <div class="modal-body" ><div id="bodycontentmodal"></div>
+        <div id="changestatusbutton" style="display:none"></div>
+
+        
+    
+        </div>
+
+        
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add new</h4>
+        </div>
+        <div class="modal-body"><div id="bodycontentmodal"></div>
+        <div id="changestatusbutton" style="display:none"></div>
+
+        
+    
+        </div>
+
+        
+      </div>
+      
+    </div>
+  </div>
+
+
+<script type="text/javascript">
+
+document.getElementById("header").innerHTML=localStorage.getItem("nameofuser");
+if(window.localStorage.getItem("usertype")=="admin")
+  document.getElementById("header_left").innerHTML='<button data-toggle="modal" data-target="#addnew" type="button" class="btn btn-primary">Add new</button>';//trigger new item addition modal here
+</script>
+</body>
+</html>
